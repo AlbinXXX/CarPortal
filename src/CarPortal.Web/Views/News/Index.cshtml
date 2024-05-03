@@ -1,0 +1,14 @@
+﻿@using CarPortal.Web.Models.News;
+@model List<NewsArticleInCollectionViewModel>
+
+@{
+    ViewData["Title"] = "Most recent news and articles";
+}
+
+<partial name="_NewsCOllectionPartial"></partial>
+
+<hr />
+<div class="text-center">
+    <h4>Are you looking for a specific article?</h4>
+    <a class="btn btn-primary" asp-action="NewsAndArticles" asp-controller="Search">Search!</a>
+</div>

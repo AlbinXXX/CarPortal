@@ -1,0 +1,195 @@
+﻿@using System.Security.Claims;
+@model OfferDetailsViewModel
+
+@{
+    ViewBag.Title = "Offer Details";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="col-lg-8 offset-2">
+    <h3 class="text-center">@Model.Name</h3>
+    <hr />
+    <img class="img-thumbnail row-lg-4" src="@Model.ThumbnailUrl" alt="Card image cap">
+    <table class="table table-info table-hover row-lg-4">
+        <tr>
+            <td>
+                Category:
+            </td>
+            <td>
+                @Model.Car.VehicleCategory
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Car model:
+            </td>
+            <td>
+                @Model.Car.Manufacturer @Model.Car.Model
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Fuel type:
+            </td>
+            <td>
+                @Model.Car.FuelType
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Engine Displacement:
+            </td>
+            <td>
+                @(Model.Car.EngineDisplacement == null ? "Not listed" : (Model.Car.EngineDisplacement.ToString() + " cc"))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Horsepower:
+            </td>
+            <td>
+                @(Model.Car.HorsePower == null ? "Not listed" : Model.Car.HorsePower)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Transmission type:
+            </td>
+            <td>
+                @Model.Car.TransmissionType
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Year:
+            </td>
+            <td>
+                @Model.Car.Year
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Mileage:
+            </td>
+            <td>
+                @Model.Car.Mileage km
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Color:
+            </td>
+            <td>
+                @Model.Car.Color
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Additional info:
+            </td>
+            <td>
+                @Model.AdditionalInfo
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Extras:
+            </td>
+            <td>
+                @Model.Car.Extras
+            </td>
+        </tr>
+    </table>
+    <hr />
+    <table class="table table-bordered table-info table-hover">
+        <tr>
+            <td>
+                Price:
+            </td>
+            <td>
+                @(Model.Price.ToString("f2") + " €")
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Location:
+            </td>
+            <td>
+                @(Model.City + ", " + Model.Region + " region")
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Contact:
+            </td>
+            <td>
+                @Model.ContactPhoneNumber
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Seller:
+            </td>
+            <td>
+                @Model.SellerName
+            </td>
+        </tr>
+    </table>
+    <a class="btn btn-primary" asp-area="" asp-controller="User" asp-action="Profile" asp-route-id="@Model.SellerName">Visit seller profile</a>
+    @if (this.User.Identity.IsAuthenticated && this.User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.SellerId)
+    {
+        <a class="btn btn-danger" asp-area="" asp-controller="Offer" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+    }
+    @if (this.User.IsInRole("Administrator"))
+    {
+        <a class="btn btn-danger" asp-area="" asp-controller="Offer" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+    }
+    <hr />
+    <h4 class="text-center">Pictures</h4>
+    <hr />
+</div>
+
+
+<div id="carouselExampleControls" class="carousel slide col-lg-8 offset-2" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        @for (int i = 0; i < Model.PictureIds.Count(); i++)
+        {
+            var picture = Model.PictureIds[i];
+            <div class="carousel-item @(i == 0 ? "active" : string.Empty)">
+                <img class="d-block w-100" style="height:500px"
+                 src="@picture" alt="Picture">
+            </div>
+        }
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+<div class="text-center">
+    <hr />
+    <h4 class="text-center">Comments</h4>
+    @if (Model.Comments.Count > 0)
+    {
+        <partial name="_CommentsPartial"></partial>
+    }
+    else
+    {
+        <h5 class="text-center">No comments yet!</h5>
+        <h6 class="text-center">Be the first one to comment!</h6>
+    }
+    <form asp-action="AddComment" asp-controller="Offer" asp-route-offerId="@Model.Id" method="post" enctype="multipart/form-data">
+        <hr />
+        <h6 class="text-center">Your comment:</h6>
+        <div class="row-cols-2">
+            <textarea class="form-control" asp-for="@Model.NewComment.Content" rows="4"></textarea>
+            <button class="btn btn-primary" type="submit">Comment!</button>
+        </div>
+    </form>
+</div>

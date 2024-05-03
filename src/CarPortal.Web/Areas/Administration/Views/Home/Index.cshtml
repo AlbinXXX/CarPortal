@@ -1,0 +1,26 @@
+﻿@using CarPortal.Web.Areas.Administration.Models;
+@model AdminStatsViewModel
+
+@{
+    ViewData["Title"] = "Admin index";
+}
+
+<h2>Some quick stats:</h2>
+<table class="table">
+    <tr>
+        <th>
+            Total active offers:
+        </th>
+        <th>
+            Total active users:
+        </th>
+    </tr>
+    <tr>
+        <td>
+            @Model.OfferCount
+        </td>
+        <td>
+            @Model.UserCount
+        </td>
+    </tr>
+</table>
